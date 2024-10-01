@@ -1,0 +1,122 @@
+/* General styles */
+body {
+    background-color: #1b2b20; /* Un verde oscuro */
+    font-family: 'Press Start 2P', Arial, sans-serif; /* A custom font resembling Minecraft */
+    color: #e0e0e0; /* Color del texto */
+    overflow-x: hidden; /* Evita el desplazamiento horizontal */
+}
+
+/* Asegúrate de que el footer esté en el flujo normal del documento */
+footer {
+    margin-top: 20px; /* Espacio arriba del footer */
+    padding: 10px 0; /* Espaciado interno para el footer */
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente */
+    text-align: center; /* Centrar el texto del footer */
+    border-top: 2px solid #333; /* Borde superior para el footer */
+}
+
+/* Asegura que el contenido principal tenga un margen inferior */
+main {
+    padding-bottom: 60px; /* Espacio suficiente para evitar que el contenido se superponga con el footer */
+}
+
+/* Heading styles */
+h1, h2 {
+    font-family: 'Press Start 2P', Arial, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Button styles */
+.btn {
+    border-radius: 0;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Button styles continued */
+.btn-success {
+    background-color: #3c763d; /* Verde más oscuro */
+}
+
+.btn-success:hover {
+    background-color: #4cae4c;
+    transform: scale(1.05);
+}
+
+.btn-info {
+    background-color: #5bc0de;
+}
+
+.btn-info:hover {
+    background-color: #31b0d5;
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    background-color: #d9534f;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+    transform: scale(1.05);
+}
+
+.btn-warning {
+    background-color: #f0ad4e;
+}
+
+.btn-warning:hover {
+    background-color: #ec971f;
+    transform: scale(1.05);
+}
+
+/* Form section styles */
+.form-section {
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    border: 2px solid #333; /* Dark border */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    margin-bottom: 20px; /* Spacing between sections */
+}
+
+/* Character list styles */
+#characters-list {
+    background-color: #333;
+    border-radius: 5px;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Game action styles */
+#game {
+    border: 2px solid #5cb85c; /* Green border */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.carousel-item {
+    text-align: center; /* Centrar el texto e imagen */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(255, 255, 255, 0.5); /* Color de las flechas */
+    border-radius: 50%; /* Redondear las flechas */
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Color de fondo al pasar el ratón */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .form-section {
+        margin: 10px 0;
+    }
+}
