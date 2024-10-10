@@ -1,6 +1,4 @@
-# Nombre del Proyecto
-
-Breve descripción de tu proyecto. Explique qué hace, su propósito y a quién está dirigido.
+# Feed Your Creature
 
 ## Tabla de Contenidos
 
