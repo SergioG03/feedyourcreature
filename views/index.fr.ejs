@@ -13,6 +13,7 @@
 <!-- En-tête -->
 <header class="bg-success text-center py-3">
     <h1 class="display-4 mb-0">Minecraft</h1>
+    <img src="/images/admin-logo.png" alt="Panel de Control" class="admin-logo" onclick="showAdminPanel()">
 </header>
 
 <div class="container mt-4">
@@ -119,5 +120,18 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Control Panel -->
+<script>
+    function showAdminPanel() {
+        const username = prompt("User:", "");
+        const password = prompt("Password:", "");
+    
+        if (username === "admin" && password === "admin") {
+            window.location.href = "/admin"; // Redirige a la vista admin.ejs
+        } else {
+            alert("User or password incorrect");
+        }
+    }
+    </script>
 </body>
 </html>
