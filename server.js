@@ -86,39 +86,6 @@ app.get('/index.fr.ejs', (req, res) => {
     res.render('index.fr.ejs');
 });
 
-app.get('/sessions', async (req, res) => {
-    try {
-        const sessionCollection = mongoose.connection.collection('sessions');
-        const sessions = await sessionCollection.find().toArray();
-
-        // Extraer los IDs de los usuarios y formatear las fechas
-        const userIds = sessions.map(session => session.session.user?._id).filter(Boolean);
-        
-        const onlineUsers = await User.find({ _id: { $in: userIds } });
-
-        // Añadir fecha formateada a las sesiones
-        const sessionsWithDate = sessions.map(session => {
-            const sessionDate = session.session.cookie.expires
-                ? new Date(session.session.cookie.expires).toLocaleString()
-                : 'Sin fecha';
-
-            return {
-                ...session,
-                formattedDate: sessionDate
-            };
-        });
-
-        // Renderizar la vista con las fechas formateadas
-        res.render('sessions', { onlineUsers, sessions: sessionsWithDate });
-    } catch (err) {
-        console.error('Error obteniendo las sesiones activas:', err);
-        res.status(500).send('Error obteniendo las sesiones activas');
-    }
-});
-
-
-
-
 // Ruta de registro de usuario
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
@@ -152,6 +119,35 @@ app.post('/login', async (req, res) => {
     req.session.user = user;
     res.json({ message: 'Sesión iniciada', user }); // Devuelve el usuario con el mensaje
 });
+
+// Ruta para el panel de control
+app.get('/admin', async (req, res) => {
+    try {
+        // Obtener todos los usuarios
+        const users = await User.find().populate('characters'); // Asegúrate de que esto esté en el esquema si los personajes son subdocumentos
+        
+        // Crear un mapa de usuarios para acceder por ID
+        const userMap = {};
+        users.forEach(user => {
+            userMap[user._id] = user.username;
+        });
+
+        // Obtener todos los personajes en un solo array con sus usuarios
+        const characters = users.flatMap(user => 
+            user.characters.map(character => ({
+                ...character.toObject(),
+                username: userMap[user._id] // Añade el nombre de usuario
+            }))
+        );
+
+        // Renderiza la vista admin.ejs pasando los usuarios y personajes
+        res.render('admin', { users, characters });
+    } catch (err) {
+        console.error('Error al obtener usuarios y personajes:', err);
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
 
 // Ruta para obtener los personajes del usuario
 app.post('/characters', async (req, res) => {
@@ -215,16 +211,88 @@ app.delete('/characters/:id', async (req, res) => {
 
     await user.save(); // Guarda los cambios en el usuario
 
-    res.status(204).send(); // Envia respuesta de éxito
+    res.status(204).send(); // Envía respuesta de éxito
 });
 
-// Nueva ruta para mostrar los usuarios en línea (sesiones activas)
-app.get('/sessions', async (req, res) => {
-    const sessions = await store.all(); // Obtener todas las sesiones activas
-    const userIds = sessions.map(session => session.user?._id).filter(Boolean);
-    const onlineUsers = await User.find({ _id: { $in: userIds } });
-    res.render('sessions', { onlineUsers });
+// Ruta para eliminar un usuario por su ID
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findByIdAndDelete(userId); // Elimina el usuario por ID
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        res.status(204).send(); // Respuesta de éxito sin contenido
+    } catch (error) {
+        console.error('Error al eliminar el usuario:', error);
+        res.status(500).json({ message: 'Error al eliminar el usuario.' });
+    }
 });
+
+// Ruta para modificar un usuario por su ID
+app.put('/users/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { username, password } = req.body; // Asegúrate de obtener los datos que deseas actualizar
+
+        // Busca el usuario por ID y actualiza los campos deseados
+        const updatedUser = await User.findByIdAndUpdate(userId, { username, password }, { new: true, runValidators: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        res.json(updatedUser); // Devuelve el usuario actualizado
+    } catch (error) {
+        console.error('Error al modificar el usuario:', error);
+        res.status(500).json({ message: 'Error al modificar el usuario.' });
+    }
+});
+
+// Ruta para modificar un personaje específico por su ID
+app.put('/characters/:id', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'Usuario no autenticado' });
+    }
+
+    const userId = req.session.user._id;
+    const characterId = req.params.id;
+    const { name, image, health, stamina, energy } = req.body; // Campos a modificar
+
+    try {
+        // Busca al usuario
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        // Busca el personaje por su ID
+        const character = user.characters.id(characterId);
+        if (!character) {
+            return res.status(404).json({ message: 'Personaje no encontrado.' });
+        }
+
+        // Actualiza los campos del personaje
+        character.name = name || character.name; // Mantiene el antiguo si no se proporciona un nuevo valor
+        character.image = image || character.image;
+        character.health = health !== undefined ? health : character.health;
+        character.stamina = stamina !== undefined ? stamina : character.stamina;
+        character.energy = energy !== undefined ? energy : character.energy;
+
+        // Guarda los cambios
+        await user.save();
+
+        res.json(character); // Devuelve el personaje actualizado
+    } catch (error) {
+        console.error('Error al modificar el personaje:', error);
+        res.status(500).json({ message: 'Error al modificar el personaje.' });
+    }
+});
+
+
+
 
 // Ruta de logout
 app.post('/logout', (req, res) => {

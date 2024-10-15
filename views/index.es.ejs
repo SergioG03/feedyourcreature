@@ -13,6 +13,7 @@
 <!-- Encabezado -->
 <header class="bg-success text-center py-3">
     <h1 class="display-4 mb-0">Minecraft</h1>
+    <img src="/images/admin-logo.png" alt="Panel de Control" class="admin-logo" onclick="showAdminPanel()">
 </header>
 
 <div class="container mt-4">
@@ -27,26 +28,24 @@
     </nav>
 
     <!-- Botón de modo accesible -->
-<div class="text-center mb-4">
-    <button class="btn btn-lg btn-warning" onclick="toggleAccessibility()">Modo Accesible</button>
-</div>
+    <div class="text-center mb-4">
+        <button class="btn btn-lg btn-warning" onclick="toggleAccessibility()">Modo Accesible</button>
+    </div>
 
+    <!-- Botón de lectura de texto -->
+    <div class="text-center mb-4">
+        <button id="read-text-button" class="btn btn-lg btn-info" onclick="toggleReadText()">Leer Texto</button>
+    </div>
 
-<!-- Botón de lectura de texto -->
-<div class="text-center mb-4">
-    <button id="read-text-button" class="btn btn-lg btn-info" onclick="toggleReadText()">Leer Texto</button>
-</div>
+    <!-- Botón de cambiar idioma -->
+    <div class="text-center mb-4">
+        <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/'">Cambiar idioma</button>
+    </div>
 
-<!-- Botón de cambiar idioma -->
-<div class="text-center mb-4">
-    <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/'">Cambiar idioma</button>
-</div>
-
- <!-- Sesiones online -->
- <div class="text-center mb-4">
-    <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/sessions'">Usuarios online</button>
-</div>
-
+    <!-- Sesiones online -->
+    <div class="text-center mb-4">
+        <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/sessions'">Usuarios online</button>
+    </div>
 
     <!-- Sección de Login -->
     <div id="login" class="form-section p-4 rounded shadow" style="display: none;">
@@ -131,5 +130,20 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Script para el panel de control -->
+<script>
+function showAdminPanel() {
+    const username = prompt("Introduce el nombre de usuario:", "");
+    const password = prompt("Introduce la contraseña:", "");
+
+    if (username === "admin" && password === "admin") {
+        window.location.href = "/admin"; // Redirige a la vista admin.ejs
+    } else {
+        alert("Usuario o contraseña incorrectos");
+    }
+}
+</script>
+
 </body>
 </html>

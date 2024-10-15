@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Tu archivo de estilos -->
+</head>
+<body class="bg-light text-dark">
+
+<div class="container mt-4">
+    <h1 class="text-center">Panel de Administración</h1>
+    <h2>Usuarios</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre de Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="user-table-body">
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.username %></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteUser('<%= user._id %>')">Eliminar</button>
+                        <button class="btn btn-info" onclick="editUser('<%= user._id %>', '<%= user.username %>')">Modificar</button>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <h2>Personajes</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre del Personaje</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="character-table-body">
+            <% characters.forEach(character => { %>
+                <tr>
+                    <td><%= character.name %></td>
+                    <td><%= character.username %></td> <!-- Acceso a username directamente -->
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteCharacter('<%= character._id %>')">Eliminar</button>
+                        <button class="btn btn-info" onclick="editCharacter('<%= character._id %>', '<%= character.name %>')">Modificar</button>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    async function deleteUser(userId) {
+        const response = await fetch(`/users/${userId}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            location.reload(); // Recarga la página para actualizar la lista
+        } else {
+            alert('Error al eliminar el usuario');
+        }
+    }
+
+    async function deleteCharacter(characterId) {
+        const response = await fetch(`/characters/${characterId}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            location.reload(); // Recarga la página para actualizar la lista
+        } else {
+            alert('Error al eliminar el personaje');
+        }
+    }
+
+    function editUser(userId, username) {
+        const newUsername = prompt('Modificar nombre de usuario', username);
+        if (newUsername) {
+            fetch(`/users/${userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: newUsername })
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Recarga la página para actualizar la lista
+                } else {
+                    alert('Error al modificar el usuario');
+                }
+            });
+        }
+    }
+
+    function editCharacter(characterId, currentName) {
+        // Solicita los nuevos datos del personaje
+        const newName = prompt('Modificar nombre del personaje', currentName);
+        const newImage = prompt('Modificar imagen del personaje (URL)', '');
+        const newHealth = prompt('Modificar salud del personaje (número)', '');
+        const newStamina = prompt('Modificar resistencia del personaje (número)', '');
+        const newEnergy = prompt('Modificar energía del personaje (número)', '');
+
+        // Crea un objeto con los datos que se van a actualizar
+        const updatedCharacter = {
+            name: newName,
+            image: newImage,
+            health: newHealth ? parseInt(newHealth) : undefined,
+            stamina: newStamina ? parseInt(newStamina) : undefined,
+            energy: newEnergy ? parseInt(newEnergy) : undefined,
+        };
+
+        // Envia la actualización
+        fetch(`/characters/${characterId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedCharacter)
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload(); // Recarga la página para actualizar la lista
+            } else {
+                alert('Error al modificar el personaje');
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

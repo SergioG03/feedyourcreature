@@ -6,6 +6,27 @@ body {
     overflow-x: hidden;
 }
 
+.admin-logo {
+    cursor: pointer;
+    width: 50px; /* Ajusta el tamaño según sea necesario */
+    height: auto; /* Mantiene la proporción del logo */
+    margin-top: 10px; /* Espaciado superior */
+    margin-right: 20px; /* Espaciado derecho */
+}
+
+@media (max-width: 768px) {
+    .admin-logo {
+        width: 40px; /* Cambia el tamaño para pantallas más pequeñas */
+        margin-right: 10px; /* Reduce el espaciado en pantallas más pequeñas */
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-logo {
+        width: 30px; /* Cambia el tamaño aún más para móviles */
+        margin-right: 5px; /* Reduce aún más el espaciado */
+    }
+}
 
 
 /* Estilos para el modo accesible */
