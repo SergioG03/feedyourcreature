@@ -86,6 +86,37 @@ app.get('/index.fr.ejs', (req, res) => {
     res.render('index.fr.ejs');
 });
 
+app.get('/sessions', async (req, res) => {
+    try {
+        const sessionCollection = mongoose.connection.collection('sessions');
+        const sessions = await sessionCollection.find().toArray();
+
+        // Extraer los IDs de los usuarios y formatear las fechas
+        const userIds = sessions.map(session => session.session.user?._id).filter(Boolean);
+        
+        const onlineUsers = await User.find({ _id: { $in: userIds } });
+
+        // Añadir fecha formateada a las sesiones
+        const sessionsWithDate = sessions.map(session => {
+            const sessionDate = session.session.cookie.expires
+                ? new Date(session.session.cookie.expires).toLocaleString()
+                : 'Sin fecha';
+
+            return {
+                ...session,
+                formattedDate: sessionDate
+            };
+        });
+
+        // Renderizar la vista con las fechas formateadas
+        res.render('sessions', { onlineUsers, sessions: sessionsWithDate });
+    } catch (err) {
+        console.error('Error obteniendo las sesiones activas:', err);
+        res.status(500).send('Error obteniendo las sesiones activas');
+    }
+});
+
+
 // Ruta de registro de usuario
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
@@ -259,7 +290,7 @@ app.put('/characters/:id', async (req, res) => {
 
     const userId = req.session.user._id;
     const characterId = req.params.id;
-    const { name, image, health, stamina, energy } = req.body; // Campos a modificar
+    const { name, image, health, stamina, energy } = req.body; 
 
     try {
         // Busca al usuario
@@ -275,7 +306,7 @@ app.put('/characters/:id', async (req, res) => {
         }
 
         // Actualiza los campos del personaje
-        character.name = name || character.name; // Mantiene el antiguo si no se proporciona un nuevo valor
+        character.name = name || character.name;
         character.image = image || character.image;
         character.health = health !== undefined ? health : character.health;
         character.stamina = stamina !== undefined ? stamina : character.stamina;
@@ -290,6 +321,66 @@ app.put('/characters/:id', async (req, res) => {
         res.status(500).json({ message: 'Error al modificar el personaje.' });
     }
 });
+
+// Ruta para eliminar un personaje desde el panel de administración
+app.delete('/admin/characters/:id', async (req, res) => {
+    const characterId = req.params.id;
+
+    try {
+        // Buscar al personaje en todos los usuarios
+        const user = await User.findOne({ 'characters._id': characterId });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Personaje no encontrado' });
+        }
+
+        // Eliminar el personaje del array de personajes del usuario
+        user.characters.pull({ _id: characterId });
+
+        await user.save(); // Guarda los cambios en el usuario
+
+        res.status(204).send(); // Envía respuesta de éxito
+    } catch (error) {
+        console.error('Error al eliminar el personaje:', error);
+        res.status(500).json({ message: 'Error al eliminar el personaje' });
+    }
+});
+
+// Ruta para modificar un personaje desde el panel de administración
+app.put('/admin/characters/:id', async (req, res) => {
+    const characterId = req.params.id;
+    const { name, image, health, stamina, energy } = req.body; // Campos a modificar
+
+    try {
+        // Buscar al personaje en todos los usuarios
+        const user = await User.findOne({ 'characters._id': characterId });
+        if (!user) {
+            return res.status(404).json({ message: 'Personaje no encontrado.' });
+        }
+
+        // Buscar el personaje por su ID
+        const character = user.characters.id(characterId);
+        if (!character) {
+            return res.status(404).json({ message: 'Personaje no encontrado.' });
+        }
+
+        // Actualiza los campos del personaje
+        character.name = name || character.name;
+        character.image = image || character.image;
+        character.health = health !== undefined ? health : character.health;
+        character.stamina = stamina !== undefined ? stamina : character.stamina;
+        character.energy = energy !== undefined ? energy : character.energy;
+
+        // Guarda los cambios
+        await user.save();
+
+        res.json(character); // Devuelve el personaje actualizado
+    } catch (error) {
+        console.error('Error al modificar el personaje:', error);
+        res.status(500).json({ message: 'Error al modificar el personaje.' });
+    }
+});
+
 
 
 

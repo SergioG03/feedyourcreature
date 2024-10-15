@@ -33,27 +33,27 @@
     </table>
 
     <h2>Personajes</h2>
-    <table class="table table-bordered">
-        <thead>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre del Personaje</th>
+            <th>Usuario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="character-table-body">
+        <% characters.forEach(character => { %>
             <tr>
-                <th>Nombre del Personaje</th>
-                <th>Usuario</th>
-                <th>Acciones</th>
+                <td><%= character.name %></td>
+                <td><%= character.username %></td>
+                <td>
+                    <button class="btn btn-danger" onclick="deleteCharacter('<%= character._id %>')">Eliminar</button>
+                    <button class="btn btn-info" onclick="editCharacter('<%= character._id %>', '<%= character.name %>')">Modificar</button>
+                </td>
             </tr>
-        </thead>
-        <tbody id="character-table-body">
-            <% characters.forEach(character => { %>
-                <tr>
-                    <td><%= character.name %></td>
-                    <td><%= character.username %></td> <!-- Acceso a username directamente -->
-                    <td>
-                        <button class="btn btn-danger" onclick="deleteCharacter('<%= character._id %>')">Eliminar</button>
-                        <button class="btn btn-info" onclick="editCharacter('<%= character._id %>', '<%= character.name %>')">Modificar</button>
-                    </td>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
+        <% }); %>
+    </tbody>
+</table>
 </div>
 
 <script>
@@ -69,15 +69,15 @@
     }
 
     async function deleteCharacter(characterId) {
-        const response = await fetch(`/characters/${characterId}`, {
-            method: 'DELETE'
-        });
-        if (response.ok) {
-            location.reload(); // Recarga la página para actualizar la lista
-        } else {
-            alert('Error al eliminar el personaje');
-        }
+    const response = await fetch(`/admin/characters/${characterId}`, {
+        method: 'DELETE'
+    });
+    if (response.ok) {
+        location.reload(); // Recarga la página para actualizar la lista
+    } else {
+        alert('Error al eliminar el personaje');
     }
+}
 
     function editUser(userId, username) {
         const newUsername = prompt('Modificar nombre de usuario', username);
@@ -98,36 +98,36 @@
     }
 
     function editCharacter(characterId, currentName) {
-        // Solicita los nuevos datos del personaje
-        const newName = prompt('Modificar nombre del personaje', currentName);
-        const newImage = prompt('Modificar imagen del personaje (URL)', '');
-        const newHealth = prompt('Modificar salud del personaje (número)', '');
-        const newStamina = prompt('Modificar resistencia del personaje (número)', '');
-        const newEnergy = prompt('Modificar energía del personaje (número)', '');
+    // Solicita los nuevos datos del personaje
+    const newName = prompt('Modificar nombre del personaje', currentName);
+    const newImage = prompt('Modificar imagen del personaje (URL)', '');
+    const newHealth = prompt('Modificar salud del personaje (número)', '');
+    const newStamina = prompt('Modificar resistencia del personaje (número)', '');
+    const newEnergy = prompt('Modificar energía del personaje (número)', '');
 
-        // Crea un objeto con los datos que se van a actualizar
-        const updatedCharacter = {
-            name: newName,
-            image: newImage,
-            health: newHealth ? parseInt(newHealth) : undefined,
-            stamina: newStamina ? parseInt(newStamina) : undefined,
-            energy: newEnergy ? parseInt(newEnergy) : undefined,
-        };
+    // Crea un objeto con los datos que se van a actualizar
+    const updatedCharacter = {
+        name: newName,
+        image: newImage,
+        health: newHealth ? parseInt(newHealth) : undefined,
+        stamina: newStamina ? parseInt(newStamina) : undefined,
+        energy: newEnergy ? parseInt(newEnergy) : undefined,
+    };
 
-        // Envia la actualización
-        fetch(`/characters/${characterId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedCharacter)
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload(); // Recarga la página para actualizar la lista
-            } else {
-                alert('Error al modificar el personaje');
-            }
-        });
-    }
+    // Envia la actualización
+    fetch(`/admin/characters/${characterId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedCharacter)
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload(); // Recarga la página para actualizar la lista
+        } else {
+            alert('Error al modificar el personaje');
+        }
+    });
+}
 </script>
 
 </body>
