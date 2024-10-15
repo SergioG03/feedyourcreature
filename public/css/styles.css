@@ -8,7 +8,7 @@ body {
 
 /* Ajuste del tamaño de texto del encabezado "Minecraft" */
 h1 {
-    font-size: 10vw; /* Ajusta el tamaño de fuente basado en el ancho de la pantalla */
+    font-size: 8vw; /* Ajusta el tamaño de fuente basado en el ancho de la pantalla */
     white-space: nowrap; /* Evita que el texto se divida en varias líneas */
     overflow: hidden; /* Oculta cualquier parte desbordante del texto */
     text-align: center; /* Centra el texto en la pantalla */
@@ -16,13 +16,13 @@ h1 {
 
 @media (max-width: 768px) {
     h1 {
-        font-size: 12vw; /* Ajusta el tamaño de la fuente para pantallas más pequeñas */
+        font-size: 6vw; /* Reducir el tamaño de la fuente para pantallas más pequeñas */
     }
 }
 
 @media (max-width: 480px) {
     h1 {
-        font-size: 15vw; /* Aumenta el tamaño para móviles pequeños */
+        font-size: 4vw; /* Reducir aún más el tamaño para móviles pequeños */
     }
 }
 
@@ -137,6 +137,13 @@ input, button {
 footer {
     background-color: #343a40;
     border-top: 2px solid #ffffff;
+}
+
+/* Ocultar el footer en dispositivos móviles */
+@media (max-width: 768px) {
+    footer {
+        display: none;
+    }
 }
 
 /* Mejoras para lectores de pantalla */
