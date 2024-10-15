@@ -4,9 +4,29 @@ body {
     font-family: 'Press Start 2P', Arial, sans-serif; /* Tipografía */
     color: #e0e0e0;
     overflow-x: hidden;
-    padding-bottom: 60px; /* Espacio para el footer */
 }
 
+/* Ajuste del tamaño de texto del encabezado "Minecraft" */
+h1 {
+    font-size: 10vw; /* Ajusta el tamaño de fuente basado en el ancho de la pantalla */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Oculta cualquier parte desbordante del texto */
+    text-align: center; /* Centra el texto en la pantalla */
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 12vw; /* Ajusta el tamaño de la fuente para pantallas más pequeñas */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 15vw; /* Aumenta el tamaño para móviles pequeños */
+    }
+}
+
+/* Estilos del logo de administración */
 .admin-logo {
     cursor: pointer;
     width: 50px; /* Ajusta el tamaño según sea necesario */
@@ -62,6 +82,7 @@ body {
     color: #fff;
 }
 
+/* Estilos de los botones en estado normal y hover */
 .btn-success {
     background-color: #28a745;
 }
@@ -116,8 +137,6 @@ input, button {
 footer {
     background-color: #343a40;
     border-top: 2px solid #ffffff;
-    position: relative; /* Asegura que el footer esté en flujo con el contenido */
-    z-index: 10; /* Asegura que el footer esté encima del contenido */
 }
 
 /* Mejoras para lectores de pantalla */
@@ -175,24 +194,4 @@ footer {
     background-color: #e0e0e0; /* Fondo claro */
     color: #000; /* Texto oscuro */
     border-top: 2px solid #000; /* Borde oscuro */
-}
-
-/* Contenedor para el texto de Minecraft */
-.text-container {
-    max-width: 100%; /* Limitar el ancho al 100% de la pantalla */
-    overflow-wrap: break-word; /* Permitir que el texto se divida en palabras */
-    padding: 0 10px; /* Espaciado horizontal */
-}
-
-/* Ajustes específicos para móviles */
-@media (max-width: 768px) {
-    .text-container {
-        padding: 0 5px; /* Reducir el padding en móviles */
-    }
-
-    footer {
-        position: fixed; /* Mantener el footer fijo en la parte inferior */
-        width: 100%; /* Asegurar que el footer ocupe todo el ancho */
-        bottom: 0; /* Colocar el footer en la parte inferior */
-    }
 }
