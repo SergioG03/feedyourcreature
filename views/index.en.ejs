@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Your stylesheet -->
+</head>
+<body class="bg-dark text-white">
+
+<!-- Header -->
+<header class="bg-success text-center py-3">
+    <h1 class="display-4 mb-0">Minecraft</h1>
+</header>
+
+<div class="container mt-4">
+
+    <!-- Main Menu -->
+    <nav class="mb-4 text-center">
+        <div class="btn-group" role="group" aria-label="Main Menu">
+            <button id="login-button" class="btn btn-lg btn-success mx-2" onclick="showLogin()">Log In</button>
+            <button id="about-button" class="btn btn-lg btn-info mx-2" onclick="showAbout()">About</button>
+            <button id="logout-button" class="btn btn-lg btn-danger mx-2" style="display: none;" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Accessibility Mode Button -->
+    <div class="text-center mb-4">
+        <button class="btn btn-lg btn-warning" onclick="toggleAccessibility()">Accessibility Mode</button>
+    </div>
+
+    <!-- Language -->
+    <div class="text-center mb-4">
+        <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/'">Change language</button>
+    </div>
+
+    <!-- Sesiones online -->
+    <div class="text-center mb-4">
+        <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/sessions'">Online Users</button>
+    </div>
+
+    <!-- Login Section -->
+    <div id="login" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Log In</h2>
+        <input type="text" class="form-control mb-2" id="login-username" placeholder="Username">
+        <input type="password" class="form-control mb-2" id="login-password" placeholder="Password">
+        <button class="btn btn-primary" onclick="login()">Log In</button>
+        <p>Don't have an account? <button class="btn btn-link" onclick="showRegister()">Register here</button></p>
+    </div>
+
+    <!-- Registration Section -->
+    <div id="register" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Register</h2>
+        <input type="text" class="form-control mb-2" id="register-username" placeholder="Username">
+        <input type="password" class="form-control mb-2" id="register-password" placeholder="Password">
+        <button class="btn btn-success" onclick="register()">Register</button>
+        <button class="btn btn-secondary mt-2" onclick="showLogin()">Back</button>
+    </div>
+
+    <!-- Play Section -->
+    <div id="play-section" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Welcome, <span id="welcome-user"></span></h2>
+        <div class="d-flex justify-content-around mt-3">
+            <button class="btn btn-warning btn-lg" onclick="showGame()">Play</button>
+            <button class="btn btn-warning btn-lg" onclick="showCharacters()">Your Characters</button>
+        </div>
+    </div>
+
+    <!-- Game Section -->
+    <div id="game" class="form-section p-4 rounded shadow" style="display: none;">
+        <div class="text-center">
+            <h3 id="game-character-name"></h3>
+            <img id="game-character-image" src="" alt="Character" class="img-fluid mb-3">
+            <p>Health: <span id="character-health"></span></p>
+            <p>Stamina: <span id="character-stamina"></span></p>
+            <p>Energy: <span id="character-energy"></span></p>
+        </div>
+        <div class="d-flex justify-content-around">
+            <button class="btn btn-primary" onclick="feed()">Feed</button>
+            <button class="btn btn-primary" onclick="sleep()">Sleep</button>
+            <button class="btn btn-primary" onclick="fight()">Fight</button>
+        </div>
+        <button class="btn btn-secondary mt-3" onclick="goToMainMenu()">Back</button>
+    </div>
+
+    <!-- Create Character Section -->
+    <div id="create-character" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Create Character</h2>
+        <input type="text" class="form-control mb-2" id="character-name" placeholder="Character Name">
+        <input type="text" class="form-control mb-2" id="character-image" placeholder="Image (URL)">
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-success" onclick="createCharacter()">Create Character</button>
+            <button class="btn btn-secondary" onclick="goToMainMenu()">Back</button>
+        </div>
+        <div id="characters-list" class="mt-3"></div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>About Feed Your Creature</h2>
+        <p>Welcome to <strong>Feed Your Creature</strong>! This is an exciting adventure game inspired by Minecraft, developed with Node.js and MongoDB. Here you can:</p>
+        <ul>
+            <li><strong>Create Your Creature:</strong> Customize and choose the abilities of your unique creature.</li>
+            <li><strong>Explore the World:</strong> Navigate a vast universe full of mysteries and surprises.</li>
+            <li><strong>Fight Enemies:</strong> Face challenging creatures and improve your skills in the process.</li>
+            <li><strong>Join the Community:</strong> Collaborate with other players and participate in joint adventures.</li>
+        </ul>
+        <div class="text-center">
+            <button class="btn btn-info" onclick="showLogin()">Back to Home</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="bg-success text-white text-center fixed-bottom py-2">
+    <p><a href="https://github.com/sergiog03" class="text-white">sergiog03</a> and <a href="https://github.com/borjar3n" class="text-white">borjar3n</a></p>
+</footer>
+
+<!-- Loading the main application script -->
+<script src="/js/app.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

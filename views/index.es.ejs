@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Tu archivo de estilos -->
+</head>
+<body class="bg-dark text-white">
+
+<!-- Encabezado -->
+<header class="bg-success text-center py-3">
+    <h1 class="display-4 mb-0">Minecraft</h1>
+</header>
+
+<div class="container mt-4">
+
+    <!-- Menú principal -->
+    <nav class="mb-4 text-center">
+        <div class="btn-group" role="group" aria-label="Menu Principal">
+            <button id="login-button" class="btn btn-lg btn-success mx-2" onclick="showLogin()">Iniciar Sesión</button>
+            <button id="about-button" class="btn btn-lg btn-info mx-2" onclick="showAbout()">About</button>
+            <button id="logout-button" class="btn btn-lg btn-danger mx-2" style="display: none;" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Botón de modo accesible -->
+<div class="text-center mb-4">
+    <button class="btn btn-lg btn-warning" onclick="toggleAccessibility()">Modo Accesible</button>
+</div>
+
+
+<!-- Botón de lectura de texto -->
+<div class="text-center mb-4">
+    <button id="read-text-button" class="btn btn-lg btn-info" onclick="toggleReadText()">Leer Texto</button>
+</div>
+
+<!-- Botón de cambiar idioma -->
+<div class="text-center mb-4">
+    <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/'">Cambiar idioma</button>
+</div>
+
+ <!-- Sesiones online -->
+ <div class="text-center mb-4">
+    <button id="change-language-button" class="btn btn-lg btn-info" onclick="window.location.href='/sessions'">Usuarios online</button>
+</div>
+
+
+    <!-- Sección de Login -->
+    <div id="login" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" class="form-control mb-2" id="login-username" placeholder="Usuario">
+        <input type="password" class="form-control mb-2" id="login-password" placeholder="Contraseña">
+        <button class="btn btn-primary" onclick="login()">Iniciar Sesión</button>
+        <p>¿No tienes una cuenta? <button class="btn btn-link" onclick="showRegister()">Regístrate aquí</button></p>
+    </div>
+
+    <!-- Sección de Registro -->
+    <div id="register" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Registrarse</h2>
+        <input type="text" class="form-control mb-2" id="register-username" placeholder="Nombre de usuario">
+        <input type="password" class="form-control mb-2" id="register-password" placeholder="Contraseña">
+        <button class="btn btn-success" onclick="register()">Registrarse</button>
+        <button class="btn btn-secondary mt-2" onclick="showLogin()">Volver Atrás</button>
+    </div>
+
+    <!-- Sección de Jugar -->
+    <div id="play-section" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Bienvenido, <span id="welcome-user"></span></h2>
+        <div class="d-flex justify-content-around mt-3">
+            <button class="btn btn-warning btn-lg" onclick="showGame()">Jugar</button>
+            <button class="btn btn-warning btn-lg" onclick="showCharacters()">Tus Personajes</button>
+        </div>
+    </div>
+
+    <!-- Sección del juego -->
+    <div id="game" class="form-section p-4 rounded shadow" style="display: none;">
+        <div class="text-center">
+            <h3 id="game-character-name"></h3>
+            <img id="game-character-image" src="" alt="Personaje" class="img-fluid mb-3">
+            <p>Salud: <span id="character-health"></span></p>
+            <p>Estamina: <span id="character-stamina"></span></p>
+            <p>Energía: <span id="character-energy"></span></p>
+        </div>
+        <div class="d-flex justify-content-around">
+            <button class="btn btn-primary" onclick="feed()">Alimentar</button>
+            <button class="btn btn-primary" onclick="sleep()">Dormir</button>
+            <button class="btn btn-primary" onclick="fight()">Luchar</button>
+        </div>
+        <button class="btn btn-secondary mt-3" onclick="goToMainMenu()">Volver Atrás</button>
+    </div>
+
+    <!-- Sección de Crear Personaje -->
+    <div id="create-character" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Crear Personaje</h2>
+        <input type="text" class="form-control mb-2" id="character-name" placeholder="Nombre del personaje">
+        <input type="text" class="form-control mb-2" id="character-image" placeholder="Imagen (URL)">
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-success" onclick="createCharacter()">Crear Personaje</button>
+            <button class="btn btn-secondary" onclick="goToMainMenu()">Volver Atrás</button>
+        </div>
+        <div id="characters-list" class="mt-3"></div>
+    </div>
+
+    <!-- Sección de About -->
+    <div id="about" class="form-section p-4 rounded shadow" style="display: none;">
+        <h2>Acerca de Feed Your Creature</h2>
+        <p>¡Bienvenido a <strong>Feed Your Creature</strong>! Este es un emocionante juego de aventura inspirado en Minecraft, desarrollado con Node.js y MongoDB. Aquí podrás:</p>
+        <ul>
+            <li><strong>Crear tu Criatura:</strong> Personaliza y elige las habilidades de tu criatura única.</li>
+            <li><strong>Explorar el Mundo:</strong> Navega por un vasto universo lleno de misterios y sorpresas.</li>
+            <li><strong>Combatir Enemigos:</strong> Enfréntate a desafiantes criaturas y mejora tus habilidades en el proceso.</li>
+            <li><strong>Unirte a la Comunidad:</strong> Colabora con otros jugadores y participa en aventuras conjuntas.</li>
+        </ul>
+        <div class="text-center">
+            <button class="btn btn-info" onclick="showLogin()">Volver al inicio</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Pie de página -->
+<footer class="bg-success text-white text-center fixed-bottom py-2">
+    <p><a href="https://github.com/sergiog03" class="text-white">sergiog03</a> y <a href="https://github.com/borjar3n" class="text-white">borjar3n</a></p>
+</footer>
+
+<!-- Cargando el script principal de la aplicación -->
+<script src="/js/app.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

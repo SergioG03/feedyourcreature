@@ -1,0 +1,156 @@
+/* Estilos generales */
+body {
+    background-color: #1b2b20; /* Fondo oscuro */
+    font-family: 'Press Start 2P', Arial, sans-serif; /* Tipografía */
+    color: #e0e0e0;
+    overflow-x: hidden;
+}
+
+
+
+/* Estilos para el modo accesible */
+.accessible-mode {
+    font-size: 1.5rem; /* Aumentar tamaño de letra */
+    line-height: 1.6;
+    background-color: #000; /* Fondo oscuro */
+    color: #fff; /* Texto blanco */
+}
+
+.accessible-mode h1, .accessible-mode h2, .accessible-mode p, .accessible-mode button {
+    font-size: 2rem; /* Tamaño de encabezados y botones */
+    color: #fffb; /* Texto con más contraste */
+}
+
+/* Asegurar que los botones accesibles se vean con más contraste */
+.accessible-mode .btn {
+    border: 2px solid #fff;
+}
+
+.accessible-mode .btn-warning {
+    background-color: #ffcc00;
+    color: #000;
+}
+
+.accessible-mode .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.accessible-mode .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+
+.btn-success {
+    background-color: #28a745;
+}
+
+.btn-success:hover, .btn-success:focus {
+    background-color: #218838;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+}
+
+.btn-info:hover, .btn-info:focus {
+    background-color: #138496;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-danger:hover, .btn-danger:focus {
+    background-color: #c82333;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+}
+
+.btn-warning:hover, .btn-warning:focus {
+    background-color: #e0a800;
+}
+
+/* Formularios más accesibles */
+input, button {
+    font-size: 1.2rem; /* Tamaño de fuente más grande */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.form-control {
+    background-color: #2e2e2e;
+    color: #fff;
+    border-color: #444;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    background-color: #444;
+}
+
+/* Footer con mayor visibilidad */
+footer {
+    background-color: #343a40;
+    border-top: 2px solid #ffffff;
+}
+
+/* Mejoras para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Modo accesible */
+.accessible-mode {
+    background-color: #f0f0f0; /* Fondo claro para mejor legibilidad */
+    color: #000; /* Texto oscuro */
+}
+
+/* Mejorar el contraste de texto */
+.accessible-mode h1,
+.accessible-mode h2,
+.accessible-mode p,
+.accessible-mode a {
+    color: #000; /* Texto oscuro para mayor contraste */
+}
+
+/* Mejora en la visibilidad de los botones */
+.accessible-mode button {
+    background-color: #007bff; /* Fondo azul */
+    color: #fff; /* Texto blanco */
+    border: 2px solid #0056b3; /* Borde azul oscuro */
+}
+
+/* Efecto al pasar el mouse sobre los botones */
+.accessible-mode button:hover {
+    background-color: #0056b3; /* Fondo azul oscuro */
+}
+
+/* Formulario más accesible */
+.accessible-mode input,
+.accessible-mode button {
+    font-size: 1.5rem; /* Aumentar el tamaño de fuente */
+    padding: 15px; /* Aumentar el padding */
+}
+
+/* Mejorar el enfoque */
+.accessible-mode button:focus {
+    outline: 4px solid #ff0000; /* Contorno rojo brillante para el enfoque */
+}
+
+/* Estilo del footer */
+.accessible-mode footer {
+    background-color: #e0e0e0; /* Fondo claro */
+    color: #000; /* Texto oscuro */
+    border-top: 2px solid #000; /* Borde oscuro */
+}

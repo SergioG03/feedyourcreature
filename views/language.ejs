@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Idioma - Minecraft Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Tu archivo de estilos -->
+</head>
+<body class="bg-dark text-white">
+
+<!-- Encabezado -->
+<header class="bg-success text-center py-3">
+    <h1 class="display-4 mb-0">Minecraft</h1>
+    <h2 class="mt-2">Selecciona tu Idioma</h2>
+</header>
+
+<div class="container mt-4 text-center">
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-primary mx-2" onclick="changeLanguage('es')">
+            <img src="https://flagcdn.com/es.svg" alt="Español" width="30" class="mr-2"> Español
+        </button>
+        <button class="btn btn-primary mx-2" onclick="changeLanguage('en')">
+            <img src="https://flagcdn.com/us.svg" alt="Inglés" width="30" class="mr-2"> Inglés
+        </button>
+        <button class="btn btn-primary mx-2" onclick="changeLanguage('fr')">
+            <img src="https://flagcdn.com/fr.svg" alt="Francés" width="30" class="mr-2"> Francés
+        </button>
+    </div>
+</div>
+
+<!-- Pie de página -->
+<footer class="bg-success text-white text-center fixed-bottom py-2">
+    <p><a href="https://github.com/sergiog03" class="text-white">sergiog03</a> y <a href="https://github.com/borjar3n" class="text-white">borjar3n</a></p>
+</footer>
+
+<script>
+    function changeLanguage(lang) {
+        if (lang === 'es') {
+            window.location.href = '/index.es.ejs'; // Redirigir a español
+        } else if (lang === 'en') {
+            window.location.href = '/index.en.ejs'; // Redirigir a inglés
+        } else if (lang === 'fr') {
+            window.location.href = '/index.fr.ejs'; // Redirigir a francés
+        }
+    }
+</script>
+</body>
+</html>
