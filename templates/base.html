@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>Multiplayer Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    {% block header %}
+    <!-- Header -->
+    <header class="game-header">
+        <h1 class="display-4 mb-0">FeedYourCreature</h1>
+    </header>
+    {% endblock %}
+
+    <div class="container">
+        <div class="text-center mb-4">
+        </div>
+        <!-- Navigation Buttons -->
+        {% if not request.endpoint == 'game' %}
+        <nav class="mb-4 text-center">
+            {% if current_user.is_authenticated %}
+                <a class="btn btn-success" href="{{ url_for('game') }}">Play</a>
+                <a class="btn btn-info" href="{{ url_for('character_creator') }}">Character</a>
+                <a class="btn btn-danger" href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a class="btn btn-success" href="{{ url_for('login') }}">Login</a>
+                <a class="btn btn-info" href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        <!-- Main Content -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center fixed-bottom bg-dark py-2 border-top">
+        <p class="mb-0">
+            <a href="https://github.com/sergiog03" class="text-white">sergiog03</a> y 
+            <a href="https://github.com/borjar3n" class="text-white">borjar3n</a>
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function toggleAccessibility() {
+            document.body.classList.toggle('accessible-mode');
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

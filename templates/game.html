@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block header %}
+<header class="game-header">
+    <div class="header-menu">
+        <button class="menu-toggle">☰</button>
+        <div class="menu-content">
+            <a class="btn btn-secondary mb-2 d-block" href="{{ url_for('game') }}">Play</a>
+            <a class="btn btn-secondary mb-2 d-block" href="{{ url_for('character_creator') }}">Character</a>
+            <button class="btn btn-secondary mb-2 d-block" onclick="toggleBiome()">Switch Biome</button>
+            <a class="btn btn-danger d-block" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <h1 class="display-4 mb-0">FeedYourCreature</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="game-layout">
+    <div class="online-users-panel">
+        <h3>Online Users</h3>
+        <div id="online-users-list"></div>
+    </div>
+    <div class="game-container">
+        <div id="game-canvas"></div>
+    </div>
+    <div class="chat-panel">
+        <h3>Chat</h3>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Type your message..." maxlength="100">
+            <button class="btn btn-success btn-sm" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/character.js') }}"></script>
+<script src="{{ url_for('static', filename='js/biomes.js') }}"></script>
+<script src="{{ url_for('static', filename='js/game.js') }}"></script>
+{% endblock %}

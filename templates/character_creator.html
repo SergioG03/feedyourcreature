@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="character-creator-container container mt-4">
+    <h2 class="mb-4">Character Creator</h2>
+    <div class="row">
+        <!-- Create Character Form -->
+        <div class="col-md-6">
+            <div class="card bg-dark mb-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Create New Character</h3>
+                    <form method="POST" action="{{ url_for('save_character') }}" class="form-section">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Character Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Choose Your Creature</label>
+                            <div class="creature-selection d-flex flex-wrap gap-3 justify-content-center">
+                                <div class="creature-option">
+                                    <input type="radio" name="color" value="red" id="red" required>
+                                    <label for="red" class="creature-label">
+                                        <img src="{{ url_for('static', filename='images/creatures/creature_red.png') }}" alt="Red Creature">
+                                    </label>
+                                </div>
+                                <div class="creature-option">
+                                    <input type="radio" name="color" value="blue" id="blue">
+                                    <label for="blue" class="creature-label">
+                                        <img src="{{ url_for('static', filename='images/creatures/creature_blue.png') }}" alt="Blue Creature">
+                                    </label>
+                                </div>
+                                <div class="creature-option">
+                                    <input type="radio" name="color" value="green" id="green">
+                                    <label for="green" class="creature-label">
+                                        <img src="{{ url_for('static', filename='images/creatures/creature_green.png') }}" alt="Green Creature">
+                                    </label>
+                                </div>
+                                <div class="creature-option">
+                                    <input type="radio" name="color" value="purple" id="purple">
+                                    <label for="purple" class="creature-label">
+                                        <img src="{{ url_for('static', filename='images/creatures/creature_purple.png') }}" alt="Purple Creature">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Create Character</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character List -->
+        <div class="col-md-6">
+            {% if characters %}
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Your Characters</h3>
+                    <div class="character-list">
+                        {% for character in characters %}
+                        <div class="character-card mb-3 p-3 border rounded">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="character-preview">
+                                        <img src="{{ url_for('static', filename='images/creatures/creature_' + character.color + '.png') }}" 
+                                             alt="{{ character.name }}" 
+                                             style="width: 40px; height: 40px;">
+                                    </div>
+                                    <div class="ms-3">
+                                        <h5 class="mb-1">{{ character.name }}</h5>
+                                        <small>Type: {{ character.color.capitalize() }}</small>
+                                    </div>
+                                </div>
+                                <form method="POST" action="{{ url_for('select_character', character_id=character.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">Select</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .creature-selection {
+        margin: 20px 0;
+    }
+    .creature-option {
+        position: relative;
+        cursor: pointer;
+    }
+    .creature-option input[type="radio"] {
+        display: none;
+    }
+    .creature-label {
+        display: block;
+        padding: 10px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .creature-label img {
+        width: 64px;
+        height: 64px;
+        image-rendering: pixelated;
+    }
+    .creature-option input[type="radio"]:checked + .creature-label {
+        border-color: var(--bs-primary);
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    .creature-label:hover {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
