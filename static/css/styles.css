@@ -3,15 +3,78 @@ body {
     background-color: #1b2b20;
     font-family: 'Press Start 2P', Arial, sans-serif;
     color: #e0e0e0;
-    overflow: hidden;
+    overflow-y: auto;
+    padding-bottom: 100px; /* Space for footer */
     min-height: 100vh;
     position: relative;
-    padding-bottom: 70px;
+}
+
+/* Accessibility Toggle Button */
+.accessibility-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.accessibility-toggle button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
+}
+
+.accessibility-toggle button:hover {
+    transform: scale(1.05);
+}
+
+.accessibility-icon {
+    font-size: 1.2rem;
+}
+
+/* Accessible mode styles */
+.accessible-mode {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.accessible-mode h1, 
+.accessible-mode h2, 
+.accessible-mode h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.accessible-mode .btn {
+    font-size: 1.2rem;
+    padding: 12px 24px;
+    margin: 8px;
+}
+
+.accessible-mode input,
+.accessible-mode select,
+.accessible-mode textarea {
+    font-size: 1.2rem;
+    padding: 12px;
+}
+
+.accessible-mode .chat-input {
+    font-size: 1.2rem;
+    padding: 12px;
+}
+
+.accessible-mode .online-user {
+    font-size: 1.1rem;
+    padding: 12px;
+    margin: 8px 0;
 }
 
 /* Container spacing */
 .container {
-    margin-bottom: 80px;
+    margin-bottom: 100px; /* Space before footer */
 }
 
 /* Game layout */
@@ -164,6 +227,11 @@ body {
     font-size: 0.8rem;
 }
 
+/* Admin panel specific styles */
+.table-responsive {
+    max-height: none; /* Remove any height restriction */
+}
+
 /* Footer */
 footer {
     background-color: #343a40;
@@ -172,4 +240,23 @@ footer {
     bottom: 0;
     width: 100%;
     padding: 1rem;
+}
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus styles for accessibility */
+.accessible-mode *:focus {
+    outline: 3px solid #ffc107 !important;
+    outline-offset: 2px;
 }

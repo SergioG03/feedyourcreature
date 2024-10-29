@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <!-- Accessibility Toggle Button -->
+    <div class="accessibility-toggle">
+        <button onclick="toggleAccessibility()" class="btn btn-warning" id="accessibility-btn" aria-label="Toggle Accessibility Mode">
+            <span class="accessibility-icon">👁️</span>
+            <span class="accessibility-text">Accessibility Mode</span>
+        </button>
+    </div>
+
     {% block header %}
     <!-- Header -->
     <header class="game-header">
@@ -24,6 +32,9 @@
             {% if current_user.is_authenticated %}
                 <a class="btn btn-success" href="{{ url_for('game') }}">Play</a>
                 <a class="btn btn-info" href="{{ url_for('character_creator') }}">Character</a>
+                {% if current_user.is_administrator() %}
+                <a class="btn btn-warning" href="{{ url_for('admin_panel') }}">Admin Panel</a>
+                {% endif %}
                 <a class="btn btn-danger" href="{{ url_for('logout') }}">Logout</a>
             {% else %}
                 <a class="btn btn-success" href="{{ url_for('login') }}">Login</a>
@@ -47,8 +58,45 @@
     <!-- Scripts -->
     <script>
         function toggleAccessibility() {
-            document.body.classList.toggle('accessible-mode');
+            const body = document.body;
+            const button = document.getElementById('accessibility-btn');
+            const isAccessible = body.classList.toggle('accessible-mode');
+            
+            // Update button text and icon based on state
+            const icon = button.querySelector('.accessibility-icon');
+            const text = button.querySelector('.accessibility-text');
+            
+            if (isAccessible) {
+                icon.textContent = '👁️';
+                text.textContent = 'Standard Mode';
+                localStorage.setItem('accessibilityMode', 'enabled');
+            } else {
+                icon.textContent = '👁️';
+                text.textContent = 'Accessibility Mode';
+                localStorage.setItem('accessibilityMode', 'disabled');
+            }
+
+            // Announce mode change for screen readers
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'alert');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = `${isAccessible ? 'Accessibility' : 'Standard'} mode enabled`;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
         }
+
+        // Check and apply saved accessibility preference on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('accessibilityMode') === 'enabled') {
+                document.body.classList.add('accessible-mode');
+                const button = document.getElementById('accessibility-btn');
+                if (button) {
+                    const text = button.querySelector('.accessibility-text');
+                    if (text) text.textContent = 'Standard Mode';
+                }
+            }
+        });
     </script>
     {% block scripts %}{% endblock %}
 </body>

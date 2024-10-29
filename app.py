@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from flask import Flask, render_template, session, request, redirect, url_for, flash, jsonify
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
@@ -7,8 +6,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-
-load_dotenv()
+from admin_middleware import admin_required
 
 class Base(DeclarativeBase):
     pass
@@ -104,7 +102,7 @@ def character_creator():
 def save_character():
     from models import Character
     name = request.form.get('name')
-    color = request.form.get('color')  # This will now be the creature color scheme
+    color = request.form.get('color')
     
     character = Character(
         user_id=current_user.id,
@@ -132,6 +130,70 @@ def select_character(character_id):
     flash('Character selected successfully!')
     return redirect(url_for('game'))
 
+# Admin routes
+@app.route('/admin')
+@login_required
+@admin_required
+def admin_panel():
+    from models import User, Character
+    users = User.query.all()
+    characters = Character.query.all()
+    return render_template('admin.html', users=users, characters=characters)
+
+@app.route('/admin/users/<int:user_id>', methods=['DELETE'])
+@login_required
+@admin_required
+def delete_user(user_id):
+    from models import User, Character
+    user = User.query.get_or_404(user_id)
+    if user.id == current_user.id:
+        return jsonify({'error': 'Cannot delete yourself'}), 400
+    
+    Character.query.filter_by(user_id=user_id).delete()
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'message': 'User deleted successfully'})
+
+@app.route('/admin/users/<int:user_id>', methods=['PUT'])
+@login_required
+@admin_required
+def update_user(user_id):
+    from models import User
+    user = User.query.get_or_404(user_id)
+    data = request.get_json()
+    
+    if 'username' in data:
+        user.username = data['username']
+    
+    db.session.commit()
+    return jsonify({'message': 'User updated successfully'})
+
+@app.route('/admin/characters/<int:character_id>', methods=['DELETE'])
+@login_required
+@admin_required
+def delete_character(character_id):
+    from models import Character
+    character = Character.query.get_or_404(character_id)
+    db.session.delete(character)
+    db.session.commit()
+    return jsonify({'message': 'Character deleted successfully'})
+
+@app.route('/admin/characters/<int:character_id>', methods=['PUT'])
+@login_required
+@admin_required
+def update_character(character_id):
+    from models import Character
+    character = Character.query.get_or_404(character_id)
+    data = request.get_json()
+    
+    if 'name' in data:
+        character.name = data['name']
+    if 'color' in data:
+        character.color = data['color']
+    
+    db.session.commit()
+    return jsonify({'message': 'Character updated successfully'})
+
 @socketio.on('connect')
 def handle_connect():
     if current_user.is_authenticated:
@@ -144,21 +206,9 @@ def handle_connect():
                 'position': {'x': 100, 'y': 100},
                 'biome': character.current_biome,
                 'color': character.color,
-                'type': character.color  # Use color as type for the pixel art creature
+                'type': character.color
             }
             emit('players_update', players, broadcast=True)
-
-@socketio.on('request_character_data')
-def handle_character_data_request():
-    if current_user.is_authenticated:
-        from models import Character
-        character = Character.query.get(session.get('active_character_id'))
-        if character and character.user_id == current_user.id:
-            emit('character_data', {
-                'color': character.color,
-                'type': character.color,  # Use color as type for the pixel art creature
-                'biome': character.current_biome
-            })
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -193,13 +243,27 @@ def handle_chat_message(data):
                 'message': message
             }, broadcast=True)
 
-# Generate creatures when the application starts
+# Create admin user on startup
+def create_admin_user():
+    from models import User
+    admin = User.query.filter_by(username='admin').first()
+    if not admin:
+        admin = User(
+            username='admin',
+            password_hash=generate_password_hash('admin123'),
+            is_admin=True
+        )
+        db.session.add(admin)
+        db.session.commit()
+        print("Admin user created")
+
+# Initialize database and create admin user
 with app.app_context():
     import models
     db.create_all()
-    # Migration to remove size column
     db.session.execute(text('ALTER TABLE character DROP COLUMN IF EXISTS size'))
+    db.session.execute(text('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE'))
     db.session.commit()
-    # Generate pixel art creatures
+    create_admin_user()
     from generate_creatures import generate_all_creatures
     generate_all_creatures()
