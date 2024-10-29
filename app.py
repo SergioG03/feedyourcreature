@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, session, request, redirect, url_for, flash, jsonify
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
@@ -7,6 +8,8 @@ from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from admin_middleware import admin_required
+
+load_dotenv()
 
 class Base(DeclarativeBase):
     pass
