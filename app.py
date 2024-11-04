@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from flask import Flask, render_template, session, request, redirect, url_for, flash, jsonify
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
@@ -8,8 +7,6 @@ from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from admin_middleware import admin_required
-
-load_dotenv()
 
 class Base(DeclarativeBase):
     pass
@@ -203,13 +200,16 @@ def handle_connect():
         from models import Character
         character = Character.query.get(session.get('active_character_id'))
         if character and character.user_id == current_user.id:
+            # Use the saved position from database
+            initial_x = character.position_x if character.position_x is not None else 100.0
+            initial_y = character.position_y if character.position_y is not None else 100.0
+            
             players[request.sid] = {
                 'id': request.sid,
                 'username': current_user.username,
-                'position': {'x': 100, 'y': 100},
+                'position': {'x': initial_x, 'y': initial_y},
                 'biome': character.current_biome,
-                'color': character.color,
-                'type': character.color
+                'color': character.color
             }
             emit('players_update', players, broadcast=True)
 
@@ -223,6 +223,13 @@ def handle_disconnect():
 def handle_move(data):
     if request.sid in players:
         players[request.sid]['position'] = data['position']
+        # Save position to database
+        from models import Character
+        character = Character.query.get(session.get('active_character_id'))
+        if character and character.user_id == current_user.id:
+            character.position_x = data['position']['x']
+            character.position_y = data['position']['y']
+            db.session.commit()
         emit('players_update', players, broadcast=True)
 
 @socketio.on('change_biome')
@@ -264,6 +271,8 @@ def create_admin_user():
 with app.app_context():
     import models
     db.create_all()
+    db.session.execute(text('ALTER TABLE character ADD COLUMN IF NOT EXISTS position_x FLOAT DEFAULT 100.0'))
+    db.session.execute(text('ALTER TABLE character ADD COLUMN IF NOT EXISTS position_y FLOAT DEFAULT 100.0'))
     db.session.execute(text('ALTER TABLE character DROP COLUMN IF EXISTS size'))
     db.session.execute(text('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE'))
     db.session.commit()
