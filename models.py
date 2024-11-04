@@ -16,3 +16,5 @@ class Character(db.Model):
     name = db.Column(db.String(64), nullable=False)
     color = db.Column(db.String(7), nullable=False)  # Store the creature color/type
     current_biome = db.Column(db.String(20), default='light')
+    position_x = db.Column(db.Float, default=100.0)
+    position_y = db.Column(db.Float, default=100.0)
