@@ -5,6 +5,7 @@ class Character {
         this.speed = 5;
         this.color = 'red';  // Default color/type
         this.images = {};
+        this.positionInitialized = false;  // Add this flag
         this.loadImages();
     }
     
