@@ -13,6 +13,22 @@ const preventScrollKeys = new Set([
     40  // Down
 ]);
 
+function getCurrentBiome() {
+    const currentHour = new Date().getHours();
+    // Consider 6:00 to 18:00 as day time
+    return (currentHour >= 6 && currentHour < 18) ? 'light' : 'dark';
+}
+
+function checkAndUpdateBiome() {
+    const newBiome = getCurrentBiome();
+    if (newBiome !== currentBiome) {
+        currentBiome = newBiome;
+        if (socket?.connected) {
+            socket.emit('change_biome', { biome: currentBiome });
+        }
+    }
+}
+
 document.addEventListener('keydown', (e) => {
     if (preventScrollKeys.has(e.keyCode)) {
         e.preventDefault();
@@ -91,6 +107,12 @@ function setup() {
     
     character = new Character(100, 100);
     
+    // Set initial biome based on time
+    currentBiome = getCurrentBiome();
+    
+    // Check biome every minute
+    setInterval(checkAndUpdateBiome, 60000);
+    
     try {
         socket = io.connect(window.location.origin, {
             reconnection: true,
@@ -111,6 +133,11 @@ function setup() {
         
         socket.on('players_update', (data) => {
             players = data;
+            if (character && data[socket.id] && !character.positionInitialized) {
+                character.x = data[socket.id].position.x;
+                character.y = data[socket.id].position.y;
+                character.positionInitialized = true;
+            }
             updateOnlineUsersList(players);
         });
 
@@ -154,14 +181,12 @@ function draw() {
     
     Object.values(players).forEach(player => {
         if (player.id !== socket?.id) {
-            // Replace the circle drawing code with image rendering
             if (character.images[player.color]) {
                 imageMode(CENTER);
                 image(character.images[player.color], player.position.x, player.position.y, 32, 32);
                 imageMode(CORNER);
             }
             
-            // Keep the username display
             fill(255);
             textAlign(CENTER);
             textSize(12);
@@ -179,13 +204,6 @@ function draw() {
             position: { x: character.x, y: character.y },
             biome: currentBiome
         });
-    }
-}
-
-function toggleBiome() {
-    currentBiome = currentBiome === 'light' ? 'dark' : 'light';
-    if (socket?.connected) {
-        socket.emit('change_biome', { biome: currentBiome });
     }
 }
 
