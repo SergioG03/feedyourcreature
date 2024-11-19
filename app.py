@@ -19,6 +19,7 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
+app.config["GOOGLE_ANALYTICS_ID"] = "G-C349FZ7XRJ"
 db.init_app(app)
 socketio = SocketIO(app)
 login_manager = LoginManager()
@@ -200,7 +201,6 @@ def handle_connect():
         from models import Character
         character = Character.query.get(session.get('active_character_id'))
         if character and character.user_id == current_user.id:
-            # Use the saved position from database
             initial_x = character.position_x if character.position_x is not None else 100.0
             initial_y = character.position_y if character.position_y is not None else 100.0
             
@@ -223,7 +223,6 @@ def handle_disconnect():
 def handle_move(data):
     if request.sid in players:
         players[request.sid]['position'] = data['position']
-        # Save position to database
         from models import Character
         character = Character.query.get(session.get('active_character_id'))
         if character and character.user_id == current_user.id:
@@ -279,3 +278,6 @@ with app.app_context():
     create_admin_user()
     from generate_creatures import generate_all_creatures
     generate_all_creatures()
+
+if __name__ == '__main__':
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=True, log_output=True)

@@ -22,9 +22,11 @@ function getCurrentBiome() {
 function checkAndUpdateBiome() {
     const newBiome = getCurrentBiome();
     if (newBiome !== currentBiome) {
+        const oldBiome = currentBiome;
         currentBiome = newBiome;
         if (socket?.connected) {
             socket.emit('change_biome', { biome: currentBiome });
+            window.Analytics.trackBiomeChange(oldBiome, currentBiome);
         }
     }
 }
@@ -69,6 +71,7 @@ function sendMessage() {
     if (message && socket?.connected) {
         socket.emit('chat_message', { message });
         chatInput.value = '';
+        window.Analytics.trackChatEvent('Send Message', message.length);
     }
 }
 
@@ -124,11 +127,13 @@ function setup() {
         socket.on('connect', () => {
             console.log('Connected to server');
             connectionError = false;
+            window.Analytics.trackGameEvent('Connection', 'Connected to Game Server');
         });
         
         socket.on('connect_error', (error) => {
             console.error('Connection error:', error);
             connectionError = true;
+            window.Analytics.trackError('Connection Error', error.message);
         });
         
         socket.on('players_update', (data) => {
@@ -137,6 +142,7 @@ function setup() {
                 character.x = data[socket.id].position.x;
                 character.y = data[socket.id].position.y;
                 character.positionInitialized = true;
+                window.Analytics.trackGameEvent('Player', 'Position Initialized');
             }
             updateOnlineUsersList(players);
         });
